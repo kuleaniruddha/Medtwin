@@ -83,11 +83,14 @@ export const initialInventory = {
     highFlowCannulasActive: 22
   },
   medications: [
-    { id: "med-01", name: "Norepinephrine 4mg/4mL", category: "ICU Emergency", currentStock: 85, minThreshold: 30, unit: "Vials", status: "NORMAL" },
-    { id: "med-02", name: "Propofol 10mg/mL (20mL)", category: "Sedative / Anesthetic", currentStock: 24, minThreshold: 40, unit: "Vials", status: "LOW_WARNING" },
-    { id: "med-03", name: "Remdesivir 100mg", category: "Antiviral", currentStock: 120, minThreshold: 50, unit: "Vials", status: "NORMAL" },
-    { id: "med-04", name: "Meropenem 1g", category: "Broad-Spectrum Antibiotic", currentStock: 65, minThreshold: 35, unit: "Vials", status: "NORMAL" },
-    { id: "med-05", name: "Heparin Sodium 5000U/mL", category: "Anticoagulant", currentStock: 18, minThreshold: 30, unit: "Vials", status: "CRITICAL_LOW" }
+    { id: "med-01", name: "Norepinephrine 4mg/4mL", category: "ICU Emergency", currentStock: 85, minThreshold: 30, maxCapacity: 150, unit: "Vials", status: "NORMAL", supplier: "Cipla Critical Care" },
+    { id: "med-02", name: "Propofol 10mg/mL (20mL)", category: "Sedative / Anesthetic", currentStock: 24, minThreshold: 40, maxCapacity: 100, unit: "Vials", status: "LOW_WARNING", supplier: "Neon Laboratories" },
+    { id: "med-03", name: "Remdesivir 100mg", category: "Antiviral", currentStock: 120, minThreshold: 50, maxCapacity: 200, unit: "Vials", status: "NORMAL", supplier: "Hetero Healthcare" },
+    { id: "med-04", name: "Meropenem 1g", category: "Broad-Spectrum Antibiotic", currentStock: 65, minThreshold: 35, maxCapacity: 120, unit: "Vials", status: "NORMAL", supplier: "Alkem Pharma" },
+    { id: "med-05", name: "Heparin Sodium 5000U/mL", category: "Anticoagulant", currentStock: 18, minThreshold: 30, maxCapacity: 80, unit: "Vials", status: "CRITICAL_LOW", supplier: "Gland Pharma" },
+    { id: "med-06", name: "Atropine Sulfate 0.6mg/mL", category: "Emergency Resuscitation", currentStock: 92, minThreshold: 40, maxCapacity: 150, unit: "Ampoules", status: "NORMAL", supplier: "Samarth Life Sciences" },
+    { id: "med-07", name: "Fentanyl Citrate 50mcg/mL (2mL)", category: "Critical Analgesic", currentStock: 32, minThreshold: 30, maxCapacity: 90, unit: "Ampoules", status: "NORMAL", supplier: "Troikaa Pharmaceuticals" },
+    { id: "med-08", name: "Normal Saline 0.9% IV (500mL)", category: "IV Fluid Hydration", currentStock: 210, minThreshold: 100, maxCapacity: 400, unit: "Bags", status: "NORMAL", supplier: "Baxter India" }
   ],
   bloodBank: [
     { group: "A+", units: 18, minRequired: 15, status: "STABLE" },
@@ -100,10 +103,23 @@ export const initialInventory = {
     { group: "AB-", units: 5, minRequired: 6, status: "LOW" }
   ],
   equipment: [
-    { id: "eq-01", type: "Mechanical Ventilator (High-End)", total: 18, inUse: 15, available: 3, maintenance: 0 },
-    { id: "eq-02", type: "Patient Monitor", total: 90, inUse: 76, available: 14, maintenance: 0 },
-    { id: "eq-03", type: "Infusion Syringe Pump", total: 120, inUse: 98, available: 20, maintenance: 2 },
-    { id: "eq-04", type: "Defibrillator Unit", total: 12, inUse: 8, available: 4, maintenance: 0 }
+    { id: "eq-01", type: "Mechanical Ventilator (High-End)", total: 18, inUse: 15, available: 3, maintenance: 0, supplier: "Hamilton Medical", power: "Operational" },
+    { id: "eq-02", type: "Patient Monitor (Multi-Para)", total: 90, inUse: 76, available: 14, maintenance: 0, supplier: "Philips Healthcare", power: "Operational" },
+    { id: "eq-03", type: "Infusion Syringe Pump", total: 120, inUse: 98, available: 20, maintenance: 2, supplier: "B. Braun India", power: "Operational" },
+    { id: "eq-04", type: "Defibrillator Unit (Biphasic)", total: 12, inUse: 8, available: 4, maintenance: 0, supplier: "Zoll Medical", power: "Operational" }
+  ],
+  consumables: [
+    { id: "con-01", name: "Sterile Trauma Burn Dressing Pack", category: "Trauma & Burn Surgery", currentStock: 14, minThreshold: 20, maxCapacity: 60, unit: "Packs", status: "LOW_WARNING", supplier: "Smith & Nephew" },
+    { id: "con-02", name: "Level 3 PPE Coveralls & N95", category: "Infection Control", currentStock: 180, minThreshold: 80, maxCapacity: 300, unit: "Kits", status: "NORMAL", supplier: "3M Healthcare" },
+    { id: "con-03", name: "IV Infusion Cannula (18G / 20G)", category: "Emergency Access", currentStock: 340, minThreshold: 150, maxCapacity: 500, unit: "Units", status: "NORMAL", supplier: "BD Medical" },
+    { id: "con-04", name: "Endotracheal Tubes (7.5mm Cuffed)", category: "Airway Management", currentStock: 22, minThreshold: 25, maxCapacity: 80, unit: "Packs", status: "LOW_WARNING", supplier: "Teleflex Medical" },
+    { id: "con-05", name: "Triple Lumen Central Venous Catheter", category: "ICU Resuscitation", currentStock: 16, minThreshold: 15, maxCapacity: 40, unit: "Sets", status: "NORMAL", supplier: "Arrow International" }
+  ],
+  orders: [
+    { id: "po-101", poNumber: "PO-2026-9041", category: "Blood Bank", itemName: "O- Negative Red Blood Cells", quantity: 8, unit: "Units", supplier: "Red Cross Blood Center Mumbai", priority: "STAT Emergency", status: "IN_TRANSIT", timestamp: new Date(Date.now() - 12 * 60000).toISOString(), eta: "18 mins" },
+    { id: "po-102", poNumber: "PO-2026-9039", category: "Oxygen", itemName: "Liquid Cryogenic O2 Bulk Delivery", quantity: 5000, unit: "Liters", supplier: "Praxair Cryogenics India", priority: "Urgent", status: "PROCESSING", timestamp: new Date(Date.now() - 48 * 60000).toISOString(), eta: "1 hr 10 mins" },
+    { id: "po-103", poNumber: "PO-2026-9022", category: "Pharmaceuticals", itemName: "Propofol 10mg/mL (20mL)", quantity: 50, unit: "Vials", supplier: "Neon Laboratories", priority: "Standard", status: "DELIVERED", timestamp: new Date(Date.now() - 180 * 60000).toISOString(), eta: "Delivered" },
+    { id: "po-104", poNumber: "PO-2026-9011", category: "Consumables", itemName: "Sterile Trauma Burn Dressing Pack", quantity: 25, unit: "Packs", supplier: "Smith & Nephew", priority: "Standard", status: "DELIVERED", timestamp: new Date(Date.now() - 1440 * 60000).toISOString(), eta: "Delivered" }
   ]
 };
 

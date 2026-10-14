@@ -157,15 +157,38 @@ export const HospitalProvider = ({ children }) => {
     if (inv && inv.medications) {
       const updated = inv.medications.map(m => ({
         ...m,
-        currentStock: m.maxCapacity,
+        currentStock: m.maxCapacity || 120,
         status: 'NORMAL'
       }));
       simulator.updateInventory('medications_all', updated);
-      // Update individual items
-      updated.forEach(m => {
-        simulator.updateInventory('medications', { id: m.id, newStock: m.maxCapacity });
-      });
     }
+  };
+
+  // Quick Action: Restock all blood bank units to safe levels
+  const handleRestockAllBlood = async () => {
+    const inv = simulator.getData('inventory');
+    if (inv && inv.bloodBank) {
+      const updated = inv.bloodBank.map(b => ({
+        ...b,
+        units: Math.max(b.units, b.minRequired + 10),
+        status: 'STABLE'
+      }));
+      simulator.updateInventory('bloodBank_all', updated);
+    }
+  };
+
+  // Helper: Create a formal Purchase / Requisition Order
+  const handleCreatePurchaseOrder = async (orderData) => {
+    const poNumber = `PO-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newOrder = {
+      id: `po-${Date.now().toString().slice(-4)}`,
+      poNumber,
+      timestamp: new Date().toISOString(),
+      status: 'PROCESSING',
+      ...orderData
+    };
+    simulator.updateInventory('add_order', newOrder);
+    return newOrder;
   };
 
   const handleSendUserChatMessage = async (userText) => {
@@ -210,6 +233,8 @@ export const HospitalProvider = ({ children }) => {
     quickAdmit: handleQuickAdmit,
     quickDischarge: handleQuickDischarge,
     restockAllMedications: handleRestockAllMedications,
+    restockAllBlood: handleRestockAllBlood,
+    createPurchaseOrder: handleCreatePurchaseOrder,
     refreshData: () => setMetrics(simulator.getData('metrics'))
   };
 

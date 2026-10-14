@@ -143,11 +143,27 @@ class InMemoryFirestoreSimulator {
       bedsToLoad = [...initialBeds];
     }
 
+    let invToLoad = savedState?.inventory ? { ...savedState.inventory } : JSON.parse(JSON.stringify(initialInventory));
+    if (!invToLoad.orders || invToLoad.orders.length === 0) {
+      invToLoad.orders = JSON.parse(JSON.stringify(initialInventory.orders || []));
+    }
+    if (!invToLoad.consumables || invToLoad.consumables.length === 0) {
+      invToLoad.consumables = JSON.parse(JSON.stringify(initialInventory.consumables || []));
+    }
+    if (!invToLoad.medications || invToLoad.medications.length < initialInventory.medications.length) {
+      const existingIds = new Set((invToLoad.medications || []).map(m => m.id));
+      const freshMeds = initialInventory.medications.filter(m => !existingIds.has(m.id));
+      invToLoad.medications = [...(invToLoad.medications || []), ...freshMeds];
+    }
+    if (!invToLoad.equipment || invToLoad.equipment.length === 0) {
+      invToLoad.equipment = JSON.parse(JSON.stringify(initialInventory.equipment || []));
+    }
+
     this.store = {
       metrics: savedState?.metrics || { ...initialMetrics },
       wards: savedState?.wards || [...initialWards],
       beds: bedsToLoad,
-      inventory: savedState?.inventory || JSON.parse(JSON.stringify(initialInventory)),
+      inventory: invToLoad,
       alerts: savedState?.alerts || [...initialAlerts],
       forecasts: savedState?.forecasts || [...initialForecasts],
       chat_messages: savedState?.chat_messages || [...initialChatMessages],
@@ -230,21 +246,77 @@ class InMemoryFirestoreSimulator {
   updateInventory(category, updateData) {
     if (category === "oxygen") {
       this.store.inventory.oxygen = { ...this.store.inventory.oxygen, ...updateData };
-      this.store.metrics.oxygenTankLevelPercent = updateData.tankPercentage || this.store.metrics.oxygenTankLevelPercent;
-      this.store.metrics.oxygenTankPSI = updateData.pressurePSI || this.store.metrics.oxygenTankPSI;
-    } else if (category === "medications") {
-      const { id, newStock } = updateData;
-      const med = this.store.inventory.medications.find((m) => m.id === id);
-      if (med) {
-        med.currentStock = newStock;
-        med.status = newStock <= med.minThreshold ? "CRITICAL_LOW" : "NORMAL";
+      if (updateData.tankPercentage !== undefined) {
+        this.store.metrics.oxygenTankLevelPercent = updateData.tankPercentage;
       }
+      if (updateData.pressurePSI !== undefined) {
+        this.store.metrics.oxygenTankPSI = updateData.pressurePSI;
+      }
+    } else if (category === "medications") {
+      const { id, newStock, addedStock } = updateData;
+      const med = this.store.inventory.medications?.find((m) => m.id === id);
+      if (med) {
+        if (addedStock !== undefined) {
+          med.currentStock = Math.min(med.maxCapacity || 500, med.currentStock + Number(addedStock));
+        } else if (newStock !== undefined) {
+          med.currentStock = Number(newStock);
+        }
+        med.status = med.currentStock <= med.minThreshold ? "CRITICAL_LOW" : med.currentStock <= med.minThreshold * 1.5 ? "LOW_WARNING" : "NORMAL";
+      }
+    } else if (category === "medications_all") {
+      this.store.inventory.medications = updateData;
     } else if (category === "bloodBank") {
-      const { group, units } = updateData;
-      const b = this.store.inventory.bloodBank.find((item) => item.group === group);
+      const { group, units, addedUnits } = updateData;
+      const b = this.store.inventory.bloodBank?.find((item) => item.group === group);
       if (b) {
-        b.units = units;
-        b.status = units <= b.minRequired ? "CRITICAL" : "STABLE";
+        if (addedUnits !== undefined) {
+          b.units = b.units + Number(addedUnits);
+        } else if (units !== undefined) {
+          b.units = Number(units);
+        }
+        b.status = b.units <= b.minRequired ? "CRITICAL" : b.units <= b.minRequired * 1.5 ? "LOW" : "STABLE";
+      }
+    } else if (category === "bloodBank_all") {
+      this.store.inventory.bloodBank = updateData;
+    } else if (category === "equipment") {
+      const { id, addedUnits, maintenanceUnits, releaseMaintenanceUnits } = updateData;
+      const eq = this.store.inventory.equipment?.find((e) => e.id === id);
+      if (eq) {
+        if (addedUnits) {
+          eq.total += Number(addedUnits);
+          eq.available += Number(addedUnits);
+        }
+        if (maintenanceUnits) {
+          const count = Math.min(eq.available, Number(maintenanceUnits));
+          eq.available -= count;
+          eq.maintenance = (eq.maintenance || 0) + count;
+        }
+        if (releaseMaintenanceUnits) {
+          const count = Math.min(eq.maintenance || 0, Number(releaseMaintenanceUnits));
+          eq.maintenance -= count;
+          eq.available += count;
+        }
+      }
+    } else if (category === "consumables") {
+      const { id, addedUnits, newStock } = updateData;
+      if (!this.store.inventory.consumables) this.store.inventory.consumables = [];
+      const con = this.store.inventory.consumables.find((c) => c.id === id);
+      if (con) {
+        if (addedUnits !== undefined) {
+          con.currentStock = Math.min(con.maxCapacity || 500, con.currentStock + Number(addedUnits));
+        } else if (newStock !== undefined) {
+          con.currentStock = Number(newStock);
+        }
+        con.status = con.currentStock <= con.minThreshold ? "CRITICAL_LOW" : "NORMAL";
+      }
+    } else if (category === "add_order") {
+      if (!this.store.inventory.orders) this.store.inventory.orders = [];
+      this.store.inventory.orders.unshift(updateData);
+    } else if (category === "update_order") {
+      const { poNumber, status } = updateData;
+      const order = this.store.inventory.orders?.find((o) => o.poNumber === poNumber);
+      if (order) {
+        order.status = status;
       }
     }
     this.saveToStorage();
