@@ -73,10 +73,9 @@ export async function seedFirestoreCollections(firestoreInstance = db) {
         await setDoc(doc(firestoreInstance, 'wards', ward.id), ward);
       }
 
-      // 4. Beds Collection (First 30 beds for quick seed)
+      // 4. Beds Collection (All 90 beds across all 6 wards: ICU, ER, Surgical, Gen Male, Gen Female, Isolation)
       const bedsBatch = writeBatch(firestoreInstance);
-      const bedsToSeed = initialBeds.slice(0, 30);
-      for (const bed of bedsToSeed) {
+      for (const bed of initialBeds) {
         const bedDoc = doc(firestoreInstance, 'beds', bed.id);
         bedsBatch.set(bedDoc, bed);
       }
@@ -139,10 +138,15 @@ class InMemoryFirestoreSimulator {
       if (saved) savedState = JSON.parse(saved);
     } catch (_) {}
 
+    let bedsToLoad = savedState?.beds;
+    if (!bedsToLoad || bedsToLoad.length < 90) {
+      bedsToLoad = [...initialBeds];
+    }
+
     this.store = {
       metrics: savedState?.metrics || { ...initialMetrics },
       wards: savedState?.wards || [...initialWards],
-      beds: savedState?.beds || [...initialBeds],
+      beds: bedsToLoad,
       inventory: savedState?.inventory || JSON.parse(JSON.stringify(initialInventory)),
       alerts: savedState?.alerts || [...initialAlerts],
       forecasts: savedState?.forecasts || [...initialForecasts],
@@ -152,6 +156,8 @@ class InMemoryFirestoreSimulator {
       login_events: savedState?.login_events || []
     };
     this.listeners = new Map();
+    // Save full store to storage so future refreshes have all 90 beds
+    this.saveToStorage();
   }
 
   saveToStorage() {
