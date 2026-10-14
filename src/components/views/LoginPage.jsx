@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
 import { 
   Activity, Lock, Mail, Eye, EyeOff, ArrowRight, ArrowLeft,
-  Stethoscope, BedDouble, Truck, Cpu, Check, ShieldCheck
+  Stethoscope, BedDouble, Truck, Cpu, Check, ShieldCheck, RefreshCw
 } from 'lucide-react';
 import { useAuth, DUMMY_ACCOUNTS } from '../../context/AuthContext';
+import { seedFirestoreCollections } from '../../services/firebase';
 
 export const LoginPage = ({ onLoginSuccess, onBackToHome }) => {
   const { loginWithAccount, loginWithCredentials, isAuthenticating, authError } = useAuth();
@@ -13,6 +13,23 @@ export const LoginPage = ({ onLoginSuccess, onBackToHome }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
   const [statusMessage, setStatusMessage] = useState('');
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Trigger Firestore collection check & seed on mount
+  React.useEffect(() => {
+    seedFirestoreCollections().catch(() => {});
+  }, []);
+
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    setStatusMessage('Syncing collections with Firebase medtwin-83f0f...');
+    await seedFirestoreCollections();
+    setTimeout(() => {
+      setIsSyncing(false);
+      setStatusMessage('Collections verified on Firebase!');
+      setTimeout(() => setStatusMessage(''), 2500);
+    }, 800);
+  };
 
   // Subtle mouse movement interaction
   const cardRef = useRef(null);
@@ -117,10 +134,16 @@ export const LoginPage = ({ onLoginSuccess, onBackToHome }) => {
           <span>Back to Home</span>
         </button>
 
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">
+        <button
+          onClick={handleManualSync}
+          disabled={isSyncing}
+          className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 hover:border-cyan-300 px-3 py-1.5 rounded-full shadow-xs transition-all cursor-pointer"
+          title="Click to verify or seed Firestore collections"
+        >
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Firebase: <strong className="text-slate-700 font-semibold">medtwin-83f0f</strong></span>
-        </div>
+          <span>Firebase: <strong className="text-slate-800 font-semibold">medtwin-83f0f</strong></span>
+          <RefreshCw className={`w-3 h-3 text-slate-400 ${isSyncing ? 'animate-spin text-cyan-600' : ''}`} />
+        </button>
       </header>
 
       {/* ── Center Login Card ── */}

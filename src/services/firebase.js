@@ -1,22 +1,23 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, writeBatch } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { initialMetrics, initialWards, initialBeds, initialInventory, initialAlerts, initialForecasts, initialChatMessages, initialFlowNodes } from './mockData';
 
-// Environment variable reading with medtwin-83f0f credentials
+// Environment variable reading with live medtwin-83f0f credentials
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyMedTwin_83f0f_WebKeySimulated",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDOCZA70PesBsW0NrDXjwkSz39RRcCq5gI",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "medtwin-83f0f.firebaseapp.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "medtwin-83f0f",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "medtwin-83f0f.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "102513368539941640008",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:102513368539941640008:web:medtwin83f0f"
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "medtwin-83f0f.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "701580093651",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:701580093651:web:55d5ec2f7427f06244cc26",
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-FW46QMXHFK"
 };
 
 const isLiveConfigured = Boolean(
-  import.meta.env.VITE_FIREBASE_API_KEY &&
-  import.meta.env.VITE_FIREBASE_PROJECT_ID &&
-  !import.meta.env.VITE_FIREBASE_API_KEY.includes("Simulated")
+  firebaseConfig.apiKey &&
+  firebaseConfig.projectId &&
+  !firebaseConfig.apiKey.includes("Simulated")
 );
 
 let app = null;
@@ -29,8 +30,101 @@ if (isLiveConfigured) {
     db = getFirestore(app);
     auth = getAuth(app);
     console.log("🔥 Connected to Live Firebase Project:", firebaseConfig.projectId);
+
+    // Auto-seed Firestore collections in the background if empty
+    setTimeout(() => {
+      seedFirestoreCollections(db).catch(err => {
+        console.warn("Firestore seed note (check security rules if permission-denied):", err.message);
+      });
+    }, 500);
   } catch (err) {
     console.warn("⚠️ Live Firebase initialization failed. Falling back to In-Memory Firestore Simulator:", err);
+  }
+}
+
+// -----------------------------------------------------------------
+// Auto-Seeder: Creates Live Firestore Collections & Documents
+// -----------------------------------------------------------------
+export async function seedFirestoreCollections(firestoreInstance = db) {
+  if (!firestoreInstance) return false;
+
+  try {
+    console.log("🌱 Checking live Firestore collections on medtwin-83f0f...");
+    const metricsRef = doc(firestoreInstance, 'hospitals', 'metrics');
+    const metricsSnap = await getDoc(metricsRef);
+
+    if (!metricsSnap.exists()) {
+      console.log("🚀 Initializing live hospital collections in Firebase Firestore...");
+
+      // 1. Hospital Metrics
+      await setDoc(metricsRef, {
+        ...initialMetrics,
+        lastUpdated: new Date().toISOString()
+      });
+
+      // 2. Inventory Document
+      await setDoc(doc(firestoreInstance, 'inventory', 'main'), {
+        ...initialInventory,
+        lastUpdated: new Date().toISOString()
+      });
+
+      // 3. Wards Collection
+      for (const ward of initialWards) {
+        await setDoc(doc(firestoreInstance, 'wards', ward.id), ward);
+      }
+
+      // 4. Beds Collection (First 30 beds for quick seed)
+      const bedsBatch = writeBatch(firestoreInstance);
+      const bedsToSeed = initialBeds.slice(0, 30);
+      for (const bed of bedsToSeed) {
+        const bedDoc = doc(firestoreInstance, 'beds', bed.id);
+        bedsBatch.set(bedDoc, bed);
+      }
+      await bedsBatch.commit();
+
+      // 5. Alerts Collection
+      for (const alert of initialAlerts) {
+        await setDoc(doc(firestoreInstance, 'alerts', alert.id), alert);
+      }
+
+      // 6. Forecasts Collection
+      for (const forecast of initialForecasts) {
+        await setDoc(doc(firestoreInstance, 'forecasts', forecast.period), forecast);
+      }
+
+      // 7. Initial Users Collection
+      const defaultUsers = [
+        { email: "cmo.jenkins@medtwin.health", name: "Dr. Sarah Jenkins", roleId: "cmo", roleName: "Chief Medical Officer", clearance: "Level 5 — Clinical Directorate" },
+        { email: "ward.manager@medtwin.health", name: "Marcus Vance, RN", roleId: "ward_mgr", roleName: "Ward Manager", clearance: "Level 3 — Operations Dispatch" },
+        { email: "logistics.lead@medtwin.health", name: "Elena Rostova", roleId: "logistics", roleName: "Logistics Lead", clearance: "Level 4 — Supply Operations" },
+        { email: "ai.admin@medtwin.health", name: "Dr. Aniruddha Kule", roleId: "ai_admin", roleName: "AI Systems Administrator", clearance: "Level 5 — System SuperAdmin" }
+      ];
+
+      for (const u of defaultUsers) {
+        await setDoc(doc(firestoreInstance, 'users', u.email.replace(/[.@]/g, '_')), {
+          ...u,
+          projectId: "medtwin-83f0f",
+          created: new Date().toISOString()
+        });
+      }
+
+      // 8. Initial System Audit / Login Event
+      await addDoc(collection(firestoreInstance, 'login_events'), {
+        action: "INITIAL_DATABASE_SEED",
+        timestamp: new Date().toISOString(),
+        projectId: "medtwin-83f0f",
+        description: "MedTwin digital twin collections populated successfully."
+      });
+
+      console.log("✅ Live Firestore Collections created successfully in Firebase Console!");
+      return true;
+    } else {
+      console.log("ℹ️ Firestore collections already exist on medtwin-83f0f.");
+      return true;
+    }
+  } catch (err) {
+    console.warn("⚠️ Live Firestore write error (Security Rules might be locked):", err);
+    return false;
   }
 }
 
@@ -39,7 +133,6 @@ if (isLiveConfigured) {
 // -----------------------------------------------------------------
 class InMemoryFirestoreSimulator {
   constructor() {
-    // Try to load any saved state from localStorage for persistent demonstration
     let savedState = null;
     try {
       const saved = localStorage.getItem('medtwin_firestore_store');
@@ -58,7 +151,7 @@ class InMemoryFirestoreSimulator {
       users: savedState?.users || [],
       login_events: savedState?.login_events || []
     };
-    this.listeners = new Map(); // key -> Set of callbacks
+    this.listeners = new Map();
   }
 
   saveToStorage() {
@@ -74,10 +167,8 @@ class InMemoryFirestoreSimulator {
     const listenerSet = this.listeners.get(collectionKey);
     listenerSet.add(callback);
 
-    // Initial trigger
     setTimeout(() => callback(this.getData(collectionKey)), 10);
 
-    // Return unsubscriber
     return () => {
       listenerSet.delete(callback);
     };
@@ -96,6 +187,7 @@ class InMemoryFirestoreSimulator {
 
   updateMetrics(partial) {
     this.store.metrics = { ...this.store.metrics, ...partial, lastUpdated: new Date().toISOString() };
+    this.saveToStorage();
     this.notify("metrics");
   }
 
@@ -110,7 +202,6 @@ class InMemoryFirestoreSimulator {
         bed.patient = null;
       }
       
-      // Update ward counters
       const ward = this.store.wards.find((w) => w.id === bed.wardId);
       if (ward) {
         if (oldStatus === "occupied" && newStatus !== "occupied") ward.occupied = Math.max(0, ward.occupied - 1);
@@ -118,12 +209,12 @@ class InMemoryFirestoreSimulator {
         ward.available = ward.total - ward.occupied;
       }
 
-      // Update total metrics
       const totalOccupied = this.store.beds.filter((b) => b.status === "occupied").length;
       this.store.metrics.occupiedBeds = totalOccupied;
       this.store.metrics.availableBeds = this.store.metrics.totalBeds - totalOccupied;
       this.store.metrics.occupancyRate = Number(((totalOccupied / this.store.metrics.totalBeds) * 100).toFixed(1));
       
+      this.saveToStorage();
       this.notify("beds");
       this.notify("wards");
       this.notify("metrics");
@@ -150,6 +241,7 @@ class InMemoryFirestoreSimulator {
         b.status = units <= b.minRequired ? "CRITICAL" : "STABLE";
       }
     }
+    this.saveToStorage();
     this.notify("inventory");
     this.notify("metrics");
   }
@@ -160,6 +252,7 @@ class InMemoryFirestoreSimulator {
       alert.acknowledged = true;
       alert.acknowledgedBy = userName;
       this.store.metrics.activeCriticalAlerts = this.store.alerts.filter((a) => a.severity === "CRITICAL" && !a.acknowledged).length;
+      this.saveToStorage();
       this.notify("alerts");
       this.notify("metrics");
     }
@@ -168,6 +261,7 @@ class InMemoryFirestoreSimulator {
   resolveAlert(alertId) {
     this.store.alerts = this.store.alerts.filter((a) => a.id !== alertId);
     this.store.metrics.activeCriticalAlerts = this.store.alerts.filter((a) => a.severity === "CRITICAL" && !a.acknowledged).length;
+    this.saveToStorage();
     this.notify("alerts");
     this.notify("metrics");
   }
@@ -184,6 +278,7 @@ class InMemoryFirestoreSimulator {
     if (newAlert.severity === "CRITICAL") {
       this.store.metrics.activeCriticalAlerts += 1;
     }
+    this.saveToStorage();
     this.notify("alerts");
     this.notify("metrics");
   }
@@ -195,6 +290,7 @@ class InMemoryFirestoreSimulator {
       ...msg
     };
     this.store.chat_messages.push(chatObj);
+    this.saveToStorage();
     this.notify("chat_messages");
   }
 
@@ -206,6 +302,7 @@ class InMemoryFirestoreSimulator {
       upperBound: Math.min(100, Number((f.upperBound * multiplier).toFixed(1))),
       oxygenBurnLmin: Number((f.oxygenBurnLmin * multiplier).toFixed(1))
     }));
+    this.saveToStorage();
     this.notify("forecasts");
   }
 
@@ -220,10 +317,8 @@ class InMemoryFirestoreSimulator {
       ...loginData
     };
     
-    // Add to login events list (keep last 50)
     this.store.login_events = [event, ...(this.store.login_events || [])].slice(0, 50);
 
-    // Update user profile in store
     const existingUserIndex = (this.store.users || []).findIndex(u => u.email === loginData.email);
     const userProfile = {
       email: loginData.email,
@@ -246,13 +341,11 @@ class InMemoryFirestoreSimulator {
     this.notify("login_events");
     this.notify("users");
 
-    // Also attempt live Firebase write if available
+    // Live write directly to Firebase Firestore
     if (isLiveConfigured && db) {
       try {
-        import('firebase/firestore').then(({ collection, addDoc, doc, setDoc }) => {
-          addDoc(collection(db, 'login_events'), event).catch(console.warn);
-          setDoc(doc(db, 'users', loginData.email.replace(/[.@]/g, '_')), userProfile, { merge: true }).catch(console.warn);
-        });
+        addDoc(collection(db, 'login_events'), event).catch(console.warn);
+        setDoc(doc(db, 'users', loginData.email.replace(/[.@]/g, '_')), userProfile, { merge: true }).catch(console.warn);
       } catch (err) {
         console.warn("Could not write to live firestore:", err);
       }
