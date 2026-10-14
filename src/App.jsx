@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { HospitalProvider, useHospital } from './context/HospitalContext';
 import { Header } from './components/layout/Header';
@@ -17,6 +17,45 @@ import { LandingPage } from './components/views/LandingPage';
 import { LoginPage } from './components/views/LoginPage';
 
 import './styles/landing.css';
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 max-w-md shadow-lg">
+            <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center mx-auto mb-4 font-bold text-lg">!</div>
+            <h2 className="text-lg font-bold text-slate-900 mb-2">Something went wrong</h2>
+            <p className="text-xs text-slate-500 mb-4">{this.state.error?.message || "An unexpected error occurred."}</p>
+            <button
+              onClick={() => {
+                this.setState({ hasError: false });
+                window.location.reload();
+              }}
+              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-semibold rounded-lg transition-colors"
+            >
+              Reload MedTwin
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const MainContent = () => {
   const { activeTab, isLoading } = useHospital();
@@ -89,8 +128,10 @@ const AppContent = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

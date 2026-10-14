@@ -1,3 +1,4 @@
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Activity, Lock, Mail, Eye, EyeOff, ArrowRight, ArrowLeft,
   Stethoscope, BedDouble, Truck, Cpu, Check, ShieldCheck, RefreshCw
