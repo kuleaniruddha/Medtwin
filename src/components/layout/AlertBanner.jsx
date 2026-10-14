@@ -10,15 +10,15 @@ export const AlertBanner = () => {
   if (!criticalAlert) return null;
 
   return (
-    <div className="bg-rose-50 text-rose-950 px-6 py-3 border-b border-rose-200">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
+    <div className="bg-rose-50 text-rose-950 px-6 sm:px-10 lg:px-12 py-3 border-b border-rose-200">
+      <div className="max-w-[1560px] 2xl:max-w-[1720px] mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
         <div className="flex items-center gap-3">
-          <div className="p-1.5 rounded-lg bg-white text-rose-700 border border-rose-200">
+          <div className="p-1.5 rounded-lg bg-white text-rose-700 border border-rose-200 shadow-xs">
             <AlertTriangle className="w-5 h-5" />
           </div>
           <div>
-            <span className="font-bold text-rose-800 mr-2">Critical:</span>
-            <span className="font-medium text-rose-950">{criticalAlert.title}</span>
+            <span className="font-bold text-rose-800 mr-2">Critical Priority:</span>
+            <span className="font-semibold text-rose-950">{criticalAlert.title}</span>
             <span className="hidden lg:inline text-rose-700 ml-2">- {criticalAlert.description}</span>
           </div>
         </div>

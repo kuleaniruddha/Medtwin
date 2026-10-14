@@ -63,24 +63,24 @@ export const MumbaiEmergencyRadar = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 lg:space-y-10">
       {/* ── Top Header Banner ── */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 shadow-xs">
-              <Radio className="w-6 h-6 animate-pulse" />
+          <div className="flex items-center gap-4">
+            <div className="p-3.5 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 shadow-xs">
+              <Radio className="w-7 h-7 animate-pulse" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-extrabold text-slate-900 font-heading">
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-2xl font-black text-slate-900 font-heading">
                   Mumbai Real-Time Incident Radar
                 </h2>
-                <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200">
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200">
                   Live City Surveillance
                 </span>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
                 <span>Catchment Area: <strong>Mumbai Metropolitan Region (MMR)</strong></span>
                 <span>•</span>
                 <span>AI Model: <strong>Hugging Face DistilBERT (distilbert-base-uncased)</strong></span>
@@ -92,9 +92,9 @@ export const MumbaiEmergencyRadar = () => {
             <button
               onClick={loadIncidents}
               disabled={loading}
-              className="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all"
+              className="flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all cursor-pointer shadow-xs"
             >
-              <RefreshCw className={`w-3.5 h-3.5 text-slate-500 ${loading ? 'animate-spin text-cyan-600' : ''}`} />
+              <RefreshCw className={`w-4 h-4 text-slate-500 ${loading ? 'animate-spin text-cyan-600' : ''}`} />
               <span>Scan Live Mumbai News</span>
             </button>
           </div>
@@ -102,65 +102,65 @@ export const MumbaiEmergencyRadar = () => {
 
         {/* Action feedback notice */}
         {actionNotice && (
-          <div className="mt-4 p-3 rounded-xl bg-cyan-50 border border-cyan-200 text-cyan-900 text-xs font-medium flex items-center gap-2 animate-fadeIn">
-            <CheckCircle2 className="w-4 h-4 text-cyan-700 flex-shrink-0" />
+          <div className="mt-4 p-4 rounded-2xl bg-cyan-50 border border-cyan-200 text-cyan-900 text-sm font-medium flex items-center gap-2.5 animate-fadeIn">
+            <CheckCircle2 className="w-5 h-5 text-cyan-700 flex-shrink-0" />
             <span>{actionNotice}</span>
           </div>
         )}
       </div>
 
-      {/* ── Quick KPI Metric Badges ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
-            <span>Monitored Incidents</span>
-            <Radio className="w-3.5 h-3.5 text-rose-500" />
+      {/* ── Quick KPI Metric Badges (Spacious & Large) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1.5">
+            <span className="font-semibold">Monitored Incidents</span>
+            <Radio className="w-4 h-4 text-rose-500" />
           </div>
-          <div className="text-2xl font-black text-slate-900 font-heading">
+          <div className="text-3xl sm:text-4xl font-black text-slate-900 font-heading">
             {incidents.length}
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5">Across Greater Mumbai</p>
+          <p className="text-xs text-slate-400 mt-1">Across Greater Mumbai</p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
-            <span>Predicted Bed Demand</span>
-            <BedDouble className="w-3.5 h-3.5 text-cyan-600" />
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1.5">
+            <span className="font-semibold">Predicted Bed Demand</span>
+            <BedDouble className="w-4 h-4 text-cyan-600" />
           </div>
-          <div className="text-2xl font-black text-cyan-700 font-heading">
-            {selectedIncident?.bedsToReserve?.total || 18} Beds
+          <div className="text-3xl sm:text-4xl font-black text-cyan-700 font-heading">
+            {selectedIncident?.bedsToReserve?.total || 18} <span className="text-lg font-bold text-slate-500">Beds</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5">ICU + Trauma reservation</p>
+          <p className="text-xs text-slate-400 mt-1">ICU + Trauma reservation</p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
-            <span>Oxygen Surge Spike</span>
-            <Wind className="w-3.5 h-3.5 text-blue-600" />
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1.5">
+            <span className="font-semibold">Oxygen Surge Spike</span>
+            <Wind className="w-4 h-4 text-blue-600" />
           </div>
-          <div className="text-2xl font-black text-blue-700 font-heading">
-            +{selectedIncident?.oxygenSurge?.additionalBurnRateLmin || 28.5} <span className="text-sm font-semibold">L/min</span>
+          <div className="text-3xl sm:text-4xl font-black text-blue-700 font-heading">
+            +{selectedIncident?.oxygenSurge?.additionalBurnRateLmin || 28.5} <span className="text-base font-semibold text-slate-500">L/min</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5">Requires 6-8 reserve tanks</p>
+          <p className="text-xs text-slate-400 mt-1">Requires 6-8 reserve tanks</p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
-          <div className="flex items-center justify-between text-xs text-slate-500 mb-1">
-            <span>HF Confidence Score</span>
-            <Cpu className="w-3.5 h-3.5 text-violet-600" />
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs">
+          <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1.5">
+            <span className="font-semibold">HF Confidence Score</span>
+            <Cpu className="w-4 h-4 text-violet-600" />
           </div>
-          <div className="text-2xl font-black text-violet-700 font-heading">
+          <div className="text-3xl sm:text-4xl font-black text-violet-700 font-heading">
             {Math.round((selectedIncident?.hfModelScore || 0.92) * 100)}%
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5">Zero-shot emergency triage</p>
+          <p className="text-xs text-slate-400 mt-1">Zero-shot emergency triage</p>
         </div>
       </div>
 
       {/* ── Main Split View: Feed on Left, Hospital Impact on Right ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Column: Live Incident Feed (5 cols) */}
-        <div className="lg:col-span-5 space-y-3">
+        <div className="lg:col-span-5 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-rose-500" />
@@ -252,13 +252,13 @@ export const MumbaiEmergencyRadar = () => {
         {/* Right Column: AI Surge Recommendation Deep Dive (7 cols) */}
         <div className="lg:col-span-7">
           {selectedIncident ? (
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-6">
+            <div className="bg-white border border-slate-200 rounded-3xl p-7 sm:p-8 shadow-xs space-y-7">
               
               {/* Incident Header Details */}
-              <div className="border-b border-slate-200 pb-4">
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <div className="border-b border-slate-200 pb-5">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-md bg-slate-900 text-white">
+                    <span className="text-xs font-black px-3 py-1 rounded-lg bg-slate-900 text-white">
                       AI Impact Assessment
                     </span>
                     <span className="text-xs text-slate-500 font-medium">

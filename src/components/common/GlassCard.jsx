@@ -11,14 +11,14 @@ export const GlassCard = ({ children, title, subtitle, action, variant = 'defaul
   };
 
   return (
-    <div className={clsx(variantStyles[variant] || variantStyles.default, 'p-5 relative overflow-hidden', className)}>
+    <div className={clsx(variantStyles[variant] || variantStyles.default, 'p-6 sm:p-7 rounded-2xl relative overflow-hidden transition-all duration-200', className)}>
       {(title || action) && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3.5 border-b border-slate-200/90">
           <div>
-            {title && <h3 className="text-lg font-bold tracking-tight text-slate-950 flex items-center gap-2">{title}</h3>}
-            {subtitle && <p className="text-sm text-slate-500 mt-0.5">{subtitle}</p>}
+            {title && <h3 className="text-lg sm:text-xl font-bold tracking-tight text-slate-950 flex items-center gap-2 font-heading">{title}</h3>}
+            {subtitle && <p className="text-xs sm:text-sm text-slate-500 mt-0.5 leading-relaxed">{subtitle}</p>}
           </div>
-          {action && <div>{action}</div>}
+          {action && <div className="self-start sm:self-center">{action}</div>}
         </div>
       )}
       {children}

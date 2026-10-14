@@ -337,7 +337,7 @@ export const ResourceTrackerView = () => {
   }, [consumables, searchQuery, statusFilter]);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="space-y-8 lg:space-y-10 w-full pb-16">
       {/* Toast Notification Banner */}
       {toastMessage && (
         <div className="fixed top-6 right-6 z-50 flex items-center gap-3 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl shadow-emerald-950/20 text-sm font-medium animate-in fade-in slide-in-from-top-4">
@@ -347,36 +347,36 @@ export const ResourceTrackerView = () => {
       )}
 
       {/* Main Header & Quick Action Bar */}
-      <GlassCard className="border-emerald-500/20 bg-gradient-to-r from-emerald-50/50 via-white to-cyan-50/50">
+      <GlassCard className="border-emerald-500/20 bg-gradient-to-r from-emerald-50/50 via-white to-cyan-50/50 p-7 sm:p-8 rounded-3xl">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <div className="p-2.5 rounded-xl bg-emerald-100/80 text-emerald-800 border border-emerald-200">
-                <Package className="w-6 h-6" />
+            <div className="flex items-center gap-3.5">
+              <div className="p-3.5 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-200">
+                <Package className="w-7 h-7" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 font-heading flex items-center gap-2">
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-heading flex items-center gap-2.5">
                   Hospital Supply & Procurement Hub
-                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                     Live Telemetry
                   </span>
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                <p className="text-xs sm:text-sm text-slate-500 mt-1">
                   Order, restock, and monitor medical gases, emergency pharmaceuticals, blood reserves, and equipment.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => {
                 restockAllMedications();
                 showToast('All low & critical medications restocked to maximum capacity!');
               }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-xs cursor-pointer"
             >
-              <RefreshCw className="w-3.5 h-3.5 text-emerald-600" />
+              <RefreshCw className="w-4 h-4 text-emerald-600" />
               Restock All Meds
             </button>
 
@@ -385,121 +385,120 @@ export const ResourceTrackerView = () => {
                 restockAllBlood();
                 showToast('All blood bank groups replenished to safe reserve levels!');
               }}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-xs cursor-pointer"
             >
-              <Droplet className="w-3.5 h-3.5 text-rose-600" />
+              <Droplet className="w-4 h-4 text-rose-600" />
               Replenish Blood Bank
             </button>
 
             <ActionButton
               icon={ShoppingCart}
               onClick={() => openOrderModal('medications')}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-700/20"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-700/20 px-5 py-2.5 text-sm font-bold rounded-xl"
             >
               + Place Supply Order
             </ActionButton>
           </div>
         </div>
 
-        {/* High-Level Telemetry KPI Ribbon */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5 pt-4 border-t border-slate-100">
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span className="font-medium">O2 Reserves</span>
+        {/* High-Level Telemetry KPI Ribbon (Spacious & Large) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6 pt-5 border-t border-slate-100">
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1">
+              <span className="font-semibold">O2 Cryo Reserves</span>
               <Wind className="w-4 h-4 text-cyan-600" />
             </div>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-bold font-mono text-slate-900">{o2.tankPercentage || 88.5}%</span>
-              <span className="text-[11px] text-cyan-700 font-semibold">{o2HoursRemaining}h run time</span>
+              <span className="text-3xl sm:text-4xl font-black font-mono text-slate-900">{o2.tankPercentage || 88.5}%</span>
+              <span className="text-xs text-cyan-700 font-bold">{o2HoursRemaining}h run time</span>
             </div>
-            <div className="mt-2 flex items-center justify-between">
-              <span className="text-[10px] text-slate-400">{o2.currentLevelLiters?.toLocaleString() || '8,850'} / 10,000 L</span>
+            <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-100">
+              <span className="text-xs text-slate-400">{o2.currentLevelLiters?.toLocaleString() || '8,850'} / 10,000 L</span>
               <button
                 onClick={() => handleRefillOxygen(5000)}
-                className="text-[10px] font-bold text-cyan-600 hover:text-cyan-800 hover:underline flex items-center gap-0.5"
+                className="text-xs font-bold text-cyan-600 hover:text-cyan-800 hover:underline flex items-center gap-0.5 cursor-pointer"
               >
-                + Refill <ArrowUpRight className="w-2.5 h-2.5" />
+                + Refill <ArrowUpRight className="w-3 h-3" />
               </button>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span className="font-medium">Pharmacy Stock</span>
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1">
+              <span className="font-semibold">Pharmacy Stock</span>
               <Pill className="w-4 h-4 text-emerald-600" />
             </div>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-bold font-mono text-slate-900">{meds.length} SKUs</span>
+              <span className="text-3xl sm:text-4xl font-black font-mono text-slate-900">{meds.length} SKUs</span>
               {criticalMedsCount > 0 ? (
-                <span className="text-[11px] text-rose-600 font-bold">{criticalMedsCount} Critical</span>
+                <span className="text-xs text-rose-600 font-bold">{criticalMedsCount} Critical</span>
               ) : (
-                <span className="text-[11px] text-emerald-600 font-bold">Safe</span>
+                <span className="text-xs text-emerald-600 font-bold">Safe</span>
               )}
             </div>
-            <div className="mt-2 flex items-center justify-between">
-              <span className="text-[10px] text-slate-400">{warningMedsCount} in warning zone</span>
+            <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-100">
+              <span className="text-xs text-slate-400">{warningMedsCount} warning zone</span>
               <button
                 onClick={() => openOrderModal('medications')}
-                className="text-[10px] font-bold text-emerald-600 hover:text-emerald-800 hover:underline flex items-center gap-0.5"
+                className="text-xs font-bold text-emerald-600 hover:text-emerald-800 hover:underline flex items-center gap-0.5 cursor-pointer"
               >
-                + Order <ArrowUpRight className="w-2.5 h-2.5" />
+                + Order <ArrowUpRight className="w-3 h-3" />
               </button>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span className="font-medium">Blood Bank</span>
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1">
+              <span className="font-semibold">Blood Bank</span>
               <Droplet className="w-4 h-4 text-rose-600" />
             </div>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-bold font-mono text-slate-900">{totalBloodUnits} Units</span>
+              <span className="text-3xl sm:text-4xl font-black font-mono text-slate-900">{totalBloodUnits} Units</span>
               {criticalBloodCount > 0 ? (
-                <span className="text-[11px] text-rose-600 font-bold">{criticalBloodCount} Shortage</span>
+                <span className="text-xs text-rose-600 font-bold">{criticalBloodCount} Shortage</span>
               ) : (
-                <span className="text-[11px] text-emerald-600 font-bold">Adequate</span>
+                <span className="text-xs text-emerald-600 font-bold">Adequate</span>
               )}
             </div>
-            <div className="mt-2 flex items-center justify-between">
-              <span className="text-[10px] text-slate-400">8 Blood Types Monitored</span>
+            <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-100">
+              <span className="text-xs text-slate-400">8 Blood Types Monitored</span>
               <button
                 onClick={() => openOrderModal('bloodBank', 'O-')}
-                className="text-[10px] font-bold text-rose-600 hover:text-rose-800 hover:underline flex items-center gap-0.5"
+                className="text-xs font-bold text-rose-600 hover:text-rose-800 hover:underline flex items-center gap-0.5 cursor-pointer"
               >
-                + Dispatch <ArrowUpRight className="w-2.5 h-2.5" />
+                + Dispatch <ArrowUpRight className="w-3 h-3" />
               </button>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between text-xs text-slate-500">
-              <span className="font-medium">Critical Equipment</span>
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1">
+              <span className="font-semibold">Critical Equipment</span>
               <Activity className="w-4 h-4 text-blue-600" />
             </div>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-bold font-mono text-slate-900">
+              <span className="text-3xl sm:text-4xl font-black font-mono text-slate-900">
                 {equip.reduce((a, c) => a + (c.available || 0), 0)} Free
               </span>
-              <span className="text-[11px] text-slate-500 font-semibold">
+              <span className="text-xs text-slate-500 font-semibold">
                 {equip.reduce((a, c) => a + (c.inUse || 0), 0)} In-Use
               </span>
             </div>
-            <div className="mt-2 flex items-center justify-between">
-              <span className="text-[10px] text-slate-400">Ventilators & Monitors</span>
+            <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-100">
+              <span className="text-xs text-slate-400">Ventilators & Monitors</span>
               <button
                 onClick={() => openOrderModal('equipment')}
-                className="text-[10px] font-bold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-0.5"
+                className="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-0.5 cursor-pointer"
               >
-                + Procure <ArrowUpRight className="w-2.5 h-2.5" />
+                + Procure <ArrowUpRight className="w-3 h-3" />
               </button>
             </div>
           </div>
         </div>
       </GlassCard>
-
       {/* Navigation Tabs and Quick Search Filter */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-2 rounded-2xl border border-slate-200/80 shadow-sm">
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white p-4 rounded-3xl border border-slate-200/90 shadow-xs">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           {[
             { id: 'all', label: 'All Supplies', count: meds.length + blood.length + consumables.length },
             { id: 'medications', label: '💊 Pharmaceuticals', count: meds.length },
@@ -511,15 +510,15 @@ export const ResourceTrackerView = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-3.5 py-2 text-xs font-semibold rounded-xl whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === tab.id
-                  ? 'bg-slate-900 text-white shadow-sm'
+                  ? 'bg-slate-900 text-white shadow-xs'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
               <span>{tab.label}</span>
               {tab.count !== null && (
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono ${
                   activeTab === tab.id ? 'bg-slate-800 text-slate-200' : 'bg-slate-200/80 text-slate-700'
                 }`}>
                   {tab.count}
@@ -529,22 +528,22 @@ export const ResourceTrackerView = () => {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1 sm:w-56">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1 sm:w-64">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Filter items or drugs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white text-slate-800"
+              className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:bg-white text-slate-800"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            className="text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:ring-1 focus:ring-emerald-500"
           >
             <option value="all">All Status</option>
             <option value="critical">Critical Low</option>

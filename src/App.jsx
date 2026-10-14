@@ -71,7 +71,7 @@ const MainContent = () => {
   }
 
   return (
-    <main className="w-full max-w-7xl mx-auto px-6 py-6 transition-all duration-300">
+    <main className="w-full max-w-[1560px] 2xl:max-w-[1720px] mx-auto px-6 sm:px-10 lg:px-12 py-8 transition-all duration-300">
       {activeTab === 'overview' && <OverviewView />}
       {activeTab === 'mumbai-radar' && <MumbaiEmergencyRadar />}
       {activeTab === 'bed-manager' && <BedManagerView />}

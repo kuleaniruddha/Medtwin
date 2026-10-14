@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Volume2, Sparkles, User, RefreshCw, MessageSquare } from 'lucide-react';
+import { Bot, Send, Volume2, Sparkles, User, RefreshCw, MessageSquare, Zap } from 'lucide-react';
 import { useHospital } from '../../context/HospitalContext';
 import { GlassCard } from '../common/GlassCard';
 import { ActionButton } from '../common/ActionButton';
@@ -46,77 +46,93 @@ export const MedTwinChat = () => {
   ];
 
   return (
-    <div className="space-y-4 max-w-4xl mx-auto">
-      {/* Header */}
-      <GlassCard className="border-cyan-500/30">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-              <Bot className="w-6 h-6 animate-bounce" />
+    <div className="space-y-6 lg:space-y-8 max-w-5xl lg:max-w-6xl mx-auto w-full pb-16">
+      {/* ── Top Header Banner (Spacious & Clean Light Theme) ── */}
+      <div className="p-7 sm:p-8 rounded-3xl bg-white border border-slate-200/90 shadow-xs">
+        <div className="flex items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center gap-4">
+            <div className="p-3.5 rounded-2xl bg-cyan-100 text-cyan-800 border border-cyan-200 shrink-0">
+              <Bot className="w-8 h-8" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">MedTwin Operational AI Copilot</h2>
-              <p className="text-xs text-slate-400">Context-aware assistant inspecting live hospital telemetry & forecasts</p>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading">
+                  MedTwin Operational AI Copilot
+                </h1>
+                <span className="px-3 py-1 text-xs font-bold bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  Online
+                </span>
+              </div>
+              <p className="text-sm text-slate-600 mt-1">
+                Context-aware clinical and operations assistant inspecting live hospital telemetry, beds, and forecasts in real-time.
+              </p>
             </div>
           </div>
         </div>
-      </GlassCard>
-
-      {/* Preset Question Chips */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-        {presets.map((preset, idx) => (
-          <button
-            key={idx}
-            onClick={() => handlePresetClick(preset)}
-            className="px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-slate-300 text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> {preset}
-          </button>
-        ))}
       </div>
 
-      {/* Chat Messages Container */}
-      <div className="glass-panel p-6 h-[480px] flex flex-col justify-between rounded-2xl border-white/10">
-        <div className="overflow-y-auto space-y-4 pr-2">
+      {/* ── Quick Prompt Chips (Spacious & Interactive) ── */}
+      <div className="space-y-2">
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block px-1">
+          Suggested Queries & Live Diagnostics:
+        </span>
+        <div className="flex items-center gap-3 overflow-x-auto pb-2">
+          {presets.map((preset, idx) => (
+            <button
+              key={idx}
+              onClick={() => handlePresetClick(preset)}
+              className="px-4 py-2.5 rounded-xl bg-white hover:bg-cyan-50/80 border border-slate-200 hover:border-cyan-300 text-slate-700 hover:text-cyan-900 text-xs sm:text-sm font-semibold whitespace-nowrap transition-all flex items-center gap-2 shadow-xs cursor-pointer shrink-0"
+            >
+              <Sparkles className="w-4 h-4 text-cyan-600" />
+              <span>{preset}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Chat Messages Container (Tall & Spacious) ── */}
+      <div className="p-6 sm:p-8 h-[600px] flex flex-col justify-between rounded-3xl bg-white border border-slate-200/90 shadow-xs">
+        <div className="overflow-y-auto space-y-6 pr-2">
           {chatMessages.map((msg) => {
             const isBot = msg.sender === 'bot';
             return (
               <div
                 key={msg.id}
-                className={`flex items-start gap-3 ${isBot ? 'justify-start' : 'justify-end'}`}
+                className={`flex items-start gap-3.5 ${isBot ? 'justify-start' : 'justify-end'}`}
               >
                 {isBot && (
-                  <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 shrink-0">
-                    <Bot className="w-4 h-4" />
+                  <div className="p-2.5 rounded-xl bg-cyan-100 text-cyan-800 border border-cyan-200 shrink-0 mt-1">
+                    <Bot className="w-5 h-5" />
                   </div>
                 )}
 
                 <div
-                  className={`p-4 rounded-2xl max-w-xl text-xs leading-relaxed space-y-2 relative group ${
+                  className={`p-5 rounded-2xl max-w-2xl text-sm leading-relaxed space-y-2 relative shadow-xs ${
                     isBot
-                      ? 'bg-slate-900/90 border border-cyan-500/20 text-slate-200 shadow-md'
-                      : 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-medium shadow-lg'
+                      ? 'bg-slate-50 border border-slate-200 text-slate-800'
+                      : 'bg-cyan-700 text-white font-medium shadow-md shadow-cyan-700/20'
                   }`}
                 >
                   <div className="whitespace-pre-wrap">{msg.text}</div>
 
-                  <div className="flex items-center justify-between pt-1 text-[10px] opacity-60">
+                  <div className="flex items-center justify-between pt-2 text-xs opacity-70 border-t border-slate-200/50">
                     <span>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     {isBot && (
                       <button
                         onClick={() => handleSpeakText(msg.text)}
-                        className="hover:text-cyan-300 transition-colors"
+                        className="hover:text-cyan-700 transition-colors p-1 rounded-md hover:bg-slate-200/60 cursor-pointer"
                         title="Read aloud"
                       >
-                        <Volume2 className="w-3.5 h-3.5" />
+                        <Volume2 className="w-4 h-4" />
                       </button>
                     )}
                   </div>
                 </div>
 
                 {!isBot && (
-                  <div className="p-2 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 shrink-0">
-                    <User className="w-4 h-4" />
+                  <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 shrink-0 mt-1">
+                    <User className="w-5 h-5" />
                   </div>
                 )}
               </div>
@@ -126,17 +142,21 @@ export const MedTwinChat = () => {
         </div>
 
         {/* Input Controls Form */}
-        <form onSubmit={handleSend} className="mt-4 flex items-center gap-3 pt-3 border-t border-white/10">
+        <form onSubmit={handleSend} className="mt-6 flex items-center gap-3 pt-4 border-t border-slate-200">
           <input
             type="text"
-            placeholder="Ask MedTwin AI about bed allocation, oxygen reserves, or surge forecasts..."
+            placeholder="Ask MedTwin AI about bed allocation, oxygen reserves, staff ratios, or surge forecasts..."
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            className="flex-1 input-glass"
+            className="flex-1 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-cyan-600 focus:bg-white transition-all shadow-inner"
           />
-          <ActionButton type="submit" variant="primary" icon={Send}>
-            Send
-          </ActionButton>
+          <button
+            type="submit"
+            className="flex items-center gap-2 px-6 py-3.5 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-2xl shadow-md shadow-cyan-700/20 transition-all cursor-pointer text-sm"
+          >
+            <Send className="w-4 h-4" />
+            <span>Send</span>
+          </button>
         </form>
       </div>
     </div>

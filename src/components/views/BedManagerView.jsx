@@ -100,31 +100,35 @@ export const BedManagerView = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 lg:space-y-10">
       
       {/* ── Top Header and Summary Metrics ── */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-extrabold text-slate-900 font-heading flex items-center gap-2">
-                <BedDouble className="w-6 h-6 text-cyan-700" />
-                <span>Bed Capacity & Patient Management</span>
-              </h2>
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-cyan-50 text-cyan-800 border border-cyan-200">
-                {totalBedsCount} Beds Active
-              </span>
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-2xl bg-cyan-100 text-cyan-800 border border-cyan-200">
+                <BedDouble className="w-6 h-6" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-black text-slate-900 font-heading flex items-center gap-2">
+                  <span>Bed Capacity & Clinical Flow Management</span>
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-cyan-50 text-cyan-800 border border-cyan-200">
+                    {totalBedsCount} Beds Monitored
+                  </span>
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                  Live hospital bed allocation across all 6 clinical departments. Admit, discharge, and track turnarounds in real-time.
+                </p>
+              </div>
             </div>
-            <p className="text-xs text-slate-500 mt-1">
-              Live hospital bed allocation across all 6 clinical departments. Admit, discharge, and track turnarounds in real-time.
-            </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={handleQuickAdmitAny}
               disabled={availableCount === 0}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-cyan-700 hover:bg-cyan-800 disabled:opacity-50 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-5 py-3 bg-cyan-700 hover:bg-cyan-800 disabled:opacity-50 text-white text-sm font-bold rounded-xl shadow-md shadow-cyan-700/20 transition-all cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
               <span>Admit Patient</span>
@@ -132,40 +136,40 @@ export const BedManagerView = () => {
           </div>
         </div>
 
-        {/* 4 Quick Stat Pills */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-            <div className="text-xs text-slate-500 font-medium">Occupied Beds</div>
-            <div className="text-2xl font-black text-slate-900 font-mono mt-0.5">
-              {occupiedCount} <span className="text-xs text-slate-400 font-sans font-normal">/ {totalBedsCount}</span>
+        {/* 4 Quick Stat Pills (Spacious & Large) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-xs">
+            <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Occupied Beds</div>
+            <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono mt-1">
+              {occupiedCount} <span className="text-sm text-slate-400 font-sans font-normal">/ {totalBedsCount}</span>
             </div>
-            <div className="text-[11px] text-cyan-700 font-semibold mt-0.5">
-              {totalBedsCount > 0 ? ((occupiedCount / totalBedsCount) * 100).toFixed(0) : 0}% Occupancy
+            <div className="text-xs text-cyan-700 font-bold mt-1">
+              {totalBedsCount > 0 ? ((occupiedCount / totalBedsCount) * 100).toFixed(1) : 0}% Occupancy
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200">
-            <div className="text-xs text-emerald-800 font-medium">Ready & Available</div>
-            <div className="text-2xl font-black text-emerald-700 font-mono mt-0.5">
+          <div className="p-5 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-xs">
+            <div className="text-xs text-emerald-800 font-semibold uppercase tracking-wider">Ready & Available</div>
+            <div className="text-3xl sm:text-4xl font-black text-emerald-700 font-mono mt-1">
               {availableCount}
             </div>
-            <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">Immediate Admissions</div>
+            <div className="text-xs text-emerald-600 font-bold mt-1">Immediate Admissions Ready</div>
           </div>
 
-          <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-200">
-            <div className="text-xs text-amber-800 font-medium">Sanitizing / Cleaning</div>
-            <div className="text-2xl font-black text-amber-700 font-mono mt-0.5">
+          <div className="p-5 rounded-2xl bg-amber-50/70 border border-amber-200 shadow-xs">
+            <div className="text-xs text-amber-800 font-semibold uppercase tracking-wider">Sanitizing / Cleaning</div>
+            <div className="text-3xl sm:text-4xl font-black text-amber-700 font-mono mt-1">
               {cleaningCount}
             </div>
-            <div className="text-[11px] text-amber-600 font-semibold mt-0.5">Turnaround in progress</div>
+            <div className="text-xs text-amber-600 font-bold mt-1">Turnaround in progress</div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-            <div className="text-xs text-slate-500 font-medium">Under Maintenance</div>
-            <div className="text-2xl font-black text-slate-700 font-mono mt-0.5">
+          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-xs">
+            <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Under Maintenance</div>
+            <div className="text-3xl sm:text-4xl font-black text-slate-700 font-mono mt-1">
               {maintenanceCount}
             </div>
-            <div className="text-[11px] text-slate-500 font-semibold mt-0.5">Equipment calibration</div>
+            <div className="text-xs text-slate-500 font-bold mt-1">Equipment calibration</div>
           </div>
         </div>
       </div>
@@ -290,7 +294,7 @@ export const BedManagerView = () => {
 
       {/* ── Beds Grid View (All Beds Rendered Dynamically) ── */}
       {filteredBeds.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredBeds.map((bed) => {
             const isOccupied = bed.status === 'occupied';
             const isAvailable = bed.status === 'available';
@@ -301,7 +305,7 @@ export const BedManagerView = () => {
             return (
               <div
                 key={bed.id}
-                className={`p-4 rounded-2xl border transition-all duration-200 flex flex-col justify-between ${
+                className={`p-5 sm:p-6 rounded-2xl border transition-all duration-200 flex flex-col justify-between ${
                   isOccupied
                     ? 'bg-white border-slate-200 hover:border-cyan-300 shadow-xs'
                     : isAvailable
@@ -312,8 +316,8 @@ export const BedManagerView = () => {
                 }`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-extrabold text-slate-900 font-mono">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-base font-extrabold text-slate-900 font-mono tracking-wide">
                       {bed.bedNumber}
                     </span>
                     <StatBadge
@@ -322,85 +326,85 @@ export const BedManagerView = () => {
                     />
                   </div>
 
-                  <div className="text-[11px] font-semibold text-slate-400 mb-2">
+                  <div className="text-xs font-bold text-slate-400 mb-3">
                     {bedWard ? bedWard.name.split('(')[0].trim() : bed.wardId}
                   </div>
 
                   {/* Occupied Patient Details */}
                   {isOccupied && bed.patient ? (
-                    <div className="space-y-1.5 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <div className="space-y-2 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200/80">
                       <div className="flex items-center justify-between text-slate-900 font-bold">
-                        <span className="truncate">{bed.patient.name}</span>
-                        <span className="text-[10px] text-cyan-700 font-mono flex-shrink-0">
+                        <span className="truncate text-sm">{bed.patient.name}</span>
+                        <span className="text-xs text-cyan-700 font-mono flex-shrink-0">
                           {bed.patient.gender}, {bed.patient.age}y
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-500 line-clamp-1">
+                      <p className="text-xs text-slate-600 line-clamp-1">
                         {bed.patient.diagnosis}
                       </p>
-                      <div className="pt-1.5 flex items-center justify-between text-[10px] text-slate-500 border-t border-slate-200/60">
-                        <span>Acuity: <strong className="text-amber-700">{bed.patient.acuityScore} / 5.0</strong></span>
+                      <div className="pt-2 flex items-center justify-between text-xs text-slate-500 border-t border-slate-200">
+                        <span>Acuity: <strong className="text-amber-700 font-bold">{bed.patient.acuityScore} / 5.0</strong></span>
                         {bed.patient.oxygenSupportReqLmin > 0 && (
-                          <span className="text-cyan-700 font-mono font-bold">
+                          <span className="text-cyan-700 font-mono font-bold bg-cyan-100/70 px-2 py-0.5 rounded-md">
                             O2: {bed.patient.oxygenSupportReqLmin} L/m
                           </span>
                         )}
                       </div>
                     </div>
                   ) : isAvailable ? (
-                    <div className="py-4 text-center">
-                      <div className="inline-flex p-2 rounded-xl bg-emerald-100 text-emerald-800 mb-1.5">
-                        <CheckCircle2 className="w-5 h-5" />
+                    <div className="py-6 text-center">
+                      <div className="inline-flex p-3 rounded-2xl bg-emerald-100 text-emerald-800 mb-2">
+                        <CheckCircle2 className="w-6 h-6" />
                       </div>
-                      <div className="text-xs font-bold text-emerald-900">Bed Sanitized & Ready</div>
-                      <div className="text-[11px] text-emerald-700">Available for intake</div>
+                      <div className="text-sm font-bold text-emerald-900">Bed Sanitized & Ready</div>
+                      <div className="text-xs text-emerald-700 mt-0.5">Available for intake</div>
                     </div>
                   ) : isCleaning ? (
-                    <div className="py-4 text-center">
-                      <div className="inline-flex p-2 rounded-xl bg-amber-100 text-amber-800 mb-1.5">
-                        <Sparkles className="w-5 h-5 animate-pulse" />
+                    <div className="py-6 text-center">
+                      <div className="inline-flex p-3 rounded-2xl bg-amber-100 text-amber-800 mb-2">
+                        <Sparkles className="w-6 h-6 animate-pulse" />
                       </div>
-                      <div className="text-xs font-bold text-amber-900">Terminal Cleaning</div>
-                      <div className="text-[11px] text-amber-700">Sanitation protocol active</div>
+                      <div className="text-sm font-bold text-amber-900">Terminal Cleaning</div>
+                      <div className="text-xs text-amber-700 mt-0.5">Sanitation protocol active</div>
                     </div>
                   ) : (
-                    <div className="py-4 text-center">
-                      <div className="inline-flex p-2 rounded-xl bg-rose-100 text-rose-800 mb-1.5">
-                        <AlertCircle className="w-5 h-5" />
+                    <div className="py-6 text-center">
+                      <div className="inline-flex p-3 rounded-2xl bg-rose-100 text-rose-800 mb-2">
+                        <AlertCircle className="w-6 h-6" />
                       </div>
-                      <div className="text-xs font-bold text-rose-900">Under Maintenance</div>
-                      <div className="text-[11px] text-rose-700">Engineering inspection</div>
+                      <div className="text-sm font-bold text-rose-900">Under Maintenance</div>
+                      <div className="text-xs text-rose-700 mt-0.5">Engineering inspection</div>
                     </div>
                   )}
                 </div>
 
                 {/* Bed Card Actions */}
-                <div className="mt-4 pt-3 border-t border-slate-100">
+                <div className="mt-5 pt-4 border-t border-slate-100">
                   {isOccupied ? (
                     <button
                       onClick={() => handleDischargeToCleaning(bed.id)}
-                      className="w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-xs font-bold transition-colors cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 text-xs sm:text-sm font-bold transition-colors cursor-pointer"
                     >
                       Discharge Patient
                     </button>
                   ) : isAvailable ? (
                     <button
                       onClick={() => handleOpenIntakeModal(bed)}
-                      className="w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer"
                     >
                       + Admit Patient
                     </button>
                   ) : isCleaning ? (
                     <button
                       onClick={() => handleMarkAvailable(bed.id)}
-                      className="w-full py-1.5 px-3 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors cursor-pointer"
                     >
                       Complete Cleaning (Ready)
                     </button>
                   ) : (
                     <button
                       onClick={() => handleMarkAvailable(bed.id)}
-                      className="w-full py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold transition-colors cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm font-bold transition-colors cursor-pointer"
                     >
                       Return to Service
                     </button>

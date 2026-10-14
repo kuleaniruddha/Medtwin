@@ -388,7 +388,7 @@ export const DigitalTwinFlow = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto pb-12">
+    <div className="space-y-8 lg:space-y-10 w-full pb-16">
       {/* Toast Alert */}
       {actionNotice && (
         <div className="fixed top-6 right-6 z-50 flex items-center gap-3 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl shadow-emerald-950/20 text-xs sm:text-sm font-semibold animate-in fade-in slide-in-from-top-4">
@@ -398,21 +398,21 @@ export const DigitalTwinFlow = () => {
       )}
 
       {/* Top Header Card */}
-      <GlassCard className="border-violet-500/20 bg-gradient-to-r from-violet-50/60 via-white to-cyan-50/50">
+      <GlassCard className="border-violet-500/20 bg-gradient-to-r from-violet-50/60 via-white to-cyan-50/50 p-7 sm:p-8 rounded-3xl">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <div className="p-2.5 rounded-xl bg-violet-100 text-violet-800 border border-violet-200">
-                <Network className="w-6 h-6" />
+            <div className="flex items-center gap-3.5">
+              <div className="p-3.5 rounded-2xl bg-violet-100 text-violet-800 border border-violet-200">
+                <Network className="w-7 h-7" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 font-heading flex items-center gap-2">
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 font-heading flex items-center gap-2.5">
                   Patient Flow & Live Ambulance Fleet Radar
-                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-800 border border-violet-200">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-800 border border-violet-200">
                     Live GPS Telemetry
                   </span>
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                <p className="text-xs sm:text-sm text-slate-500 mt-1">
                   Real-time hospital-owned ambulance tracking, pre-hospital patient vitals telemetry, and admission digital twin bottlenecks.
                 </p>
               </div>
@@ -420,92 +420,92 @@ export const DigitalTwinFlow = () => {
           </div>
 
           {/* Quick Metrics & Simulation Switch */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={() => setIsSimulatingTraffic((prev) => !prev)}
-              className={`inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg border transition shadow-sm ${
+              className={`inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl border transition shadow-xs cursor-pointer ${
                 isSimulatingTraffic
                   ? 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
                   : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
               }`}
             >
-              <Zap className={`w-3.5 h-3.5 ${isSimulatingTraffic ? 'text-emerald-600' : 'text-slate-400'}`} />
+              <Zap className={`w-4 h-4 ${isSimulatingTraffic ? 'text-emerald-600' : 'text-slate-400'}`} />
               {isSimulatingTraffic ? 'GPS Pulse: Active' : 'GPS Pulse: Paused'}
             </button>
 
             <ActionButton
               icon={PhoneCall}
               onClick={() => handlePreAlertER(selectedAmbulance)}
-              className="bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-700/20"
+              className="bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-700/20 px-5 py-2.5 text-sm font-bold rounded-xl"
             >
               Pre-Alert ER Bay ({selectedAmbulance.id})
             </ActionButton>
           </div>
         </div>
 
-        {/* Fleet KPI Quick Bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5 pt-4 border-t border-slate-100 text-xs">
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="font-medium">Active Hospital Fleet</span>
+        {/* Fleet KPI Quick Bar (Spacious & Large) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6 pt-5 border-t border-slate-100">
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1">
+              <span className="font-semibold">Active Hospital Fleet</span>
               <Truck className="w-4 h-4 text-violet-600" />
             </div>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-bold font-mono text-slate-900">{ambulances.length} Units</span>
-              <span className="text-[11px] text-emerald-600 font-semibold">100% Operational</span>
+              <span className="text-3xl sm:text-4xl font-black font-mono text-slate-900">{ambulances.length} Units</span>
+              <span className="text-xs text-emerald-600 font-bold">100% Operational</span>
             </div>
-            <p className="text-[10px] text-slate-400 mt-1">Hospital-owned & crewed</p>
+            <p className="text-xs text-slate-400 mt-1">Hospital-owned & crewed fleet</p>
           </div>
 
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="font-medium">Patients Inbound</span>
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1">
+              <span className="font-semibold">Patients Inbound</span>
               <Heart className="w-4 h-4 text-rose-600" />
             </div>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-bold font-mono text-rose-600">
+              <span className="text-3xl sm:text-4xl font-black font-mono text-rose-600">
                 {ambulances.filter((a) => a.hasPatient).length} In Transit
               </span>
-              <span className="text-[11px] text-rose-700 font-bold">2 Critical Red</span>
+              <span className="text-xs text-rose-700 font-bold">2 Critical Red</span>
             </div>
-            <p className="text-[10px] text-slate-400 mt-1">Average Inbound ETA: ~4.5 mins</p>
+            <p className="text-xs text-slate-400 mt-1">Average Inbound ETA: ~4.5 mins</p>
           </div>
 
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="font-medium">Available / Scene</span>
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1">
+              <span className="font-semibold">Available / Standby</span>
               <Navigation className="w-4 h-4 text-cyan-600" />
             </div>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-bold font-mono text-slate-900">
+              <span className="text-3xl sm:text-4xl font-black font-mono text-slate-900">
                 {ambulances.filter((a) => !a.hasPatient).length} Units
               </span>
-              <span className="text-[11px] text-cyan-700 font-semibold">1 On Scene</span>
+              <span className="text-xs text-cyan-700 font-bold">1 On Scene</span>
             </div>
-            <p className="text-[10px] text-slate-400 mt-1">Ready for re-dispatch</p>
+            <p className="text-xs text-slate-400 mt-1">Ready for emergency re-dispatch</p>
           </div>
 
-          <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
-            <div className="flex items-center justify-between text-slate-500">
-              <span className="font-medium">Intake Velocity</span>
+          <div className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-1">
+              <span className="font-semibold">Intake Velocity</span>
               <Activity className="w-4 h-4 text-amber-600" />
             </div>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-xl font-bold font-mono text-slate-900">14 pts / hr</span>
-              <span className="text-[11px] text-amber-700 font-semibold">ER Queue: 12</span>
+              <span className="text-3xl sm:text-4xl font-black font-mono text-slate-900">14 pts / hr</span>
+              <span className="text-xs text-amber-700 font-bold">ER Queue: 12</span>
             </div>
-            <p className="text-[10px] text-slate-400 mt-1">ESI Triage throughput normal</p>
+            <p className="text-xs text-slate-400 mt-1">ESI Triage throughput nominal</p>
           </div>
         </div>
       </GlassCard>
 
       {/* Navigation Sub-Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      <div className="flex items-center gap-3 border-b border-slate-200 pb-3">
         <button
           onClick={() => setActiveSubTab('map')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
+          className={`flex items-center gap-2.5 px-5 py-3 text-xs sm:text-sm font-bold rounded-xl transition cursor-pointer ${
             activeSubTab === 'map'
-              ? 'bg-slate-900 text-white shadow-sm'
+              ? 'bg-slate-900 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
           }`}
         >
@@ -515,9 +515,9 @@ export const DigitalTwinFlow = () => {
 
         <button
           onClick={() => setActiveSubTab('stages')}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
+          className={`flex items-center gap-2.5 px-5 py-3 text-xs sm:text-sm font-bold rounded-xl transition cursor-pointer ${
             activeSubTab === 'stages'
-              ? 'bg-slate-900 text-white shadow-sm'
+              ? 'bg-slate-900 text-white shadow-xs'
               : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
           }`}
         >

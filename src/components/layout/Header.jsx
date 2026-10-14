@@ -19,20 +19,20 @@ export const Header = ({ onLogout }) => {
   const unackCriticalCount = alerts?.filter(a => a.severity === 'CRITICAL' && !a.acknowledged).length || 0;
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-6 py-3 shadow-sm">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="relative p-2.5 rounded-lg bg-cyan-700 text-white shadow-sm">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-6 sm:px-10 lg:px-12 py-3.5 shadow-xs">
+      <div className="max-w-[1560px] 2xl:max-w-[1720px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="relative p-3 rounded-xl bg-cyan-700 text-white shadow-sm">
             <Activity className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-950 font-heading">
-                MedTwin <span className="text-cyan-700 font-semibold text-sm border border-cyan-200 px-2 py-0.5 rounded-md bg-cyan-50">Operations</span>
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl font-black tracking-tight text-slate-950 font-heading">
+                MedTwin <span className="text-cyan-700 font-bold text-xs border border-cyan-200 px-2.5 py-0.5 rounded-lg bg-cyan-50">Operations Center</span>
               </h1>
             </div>
-            <p className="text-sm text-slate-500 flex items-center gap-2">
-              <span>Hospital capacity, supply, and alert management</span>
+            <p className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
+              <span>Hospital capacity, live telemetry, and AI emergency dispatch hub</span>
             </p>
           </div>
         </div>

@@ -21,8 +21,8 @@ export const NavigationTabs = () => {
   ];
 
   return (
-    <nav className="bg-white/85 border-b border-slate-200 px-6 py-2">
-      <div className="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto py-1" aria-label="Primary navigation">
+    <nav className="bg-white/90 border-b border-slate-200 px-6 sm:px-10 lg:px-12 py-2.5">
+      <div className="max-w-[1560px] 2xl:max-w-[1720px] mx-auto flex items-center gap-2 overflow-x-auto py-1 scrollbar-none" aria-label="Primary navigation">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -32,10 +32,10 @@ export const NavigationTabs = () => {
               onClick={() => setActiveTab(tab.id)}
               aria-current={isActive ? 'page' : undefined}
               className={clsx(
-                'flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all duration-200 border',
+                'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 border cursor-pointer',
                 isActive
-                  ? 'bg-cyan-50 text-cyan-800 border-cyan-200 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-950 hover:bg-slate-50 border-transparent'
+                  ? 'bg-cyan-50 text-cyan-900 border-cyan-300 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-950 hover:bg-slate-100 border-transparent'
               )}
             >
               <Icon className={clsx('w-4 h-4', isActive ? 'text-cyan-700' : 'text-slate-500')} />
