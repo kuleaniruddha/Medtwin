@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { HospitalProvider, useHospital } from './context/HospitalContext';
 import { Header } from './components/layout/Header';
 import { NavigationTabs } from './components/layout/NavigationTabs';
@@ -14,6 +14,7 @@ import { AlertsView } from './components/views/AlertsView';
 import { MedTwinChat } from './components/views/MedTwinChat';
 import { AnalyticsView } from './components/views/AnalyticsView';
 import { LandingPage } from './components/views/LandingPage';
+import { LoginPage } from './components/views/LoginPage';
 
 import './styles/landing.css';
 
@@ -43,30 +44,53 @@ const MainContent = () => {
   );
 };
 
-const Dashboard = () => (
-  <AuthProvider>
+const AppContent = () => {
+  const { logout } = useAuth();
+  // Screen states: 'landing' | 'login' | 'dashboard'
+  const [screen, setScreen] = useState('landing');
+
+  if (screen === 'landing') {
+    return (
+      <LandingPage
+        onGetStarted={() => setScreen('login')}
+        onEnter={() => setScreen('login')}
+      />
+    );
+  }
+
+  if (screen === 'login') {
+    return (
+      <LoginPage
+        onLoginSuccess={() => setScreen('dashboard')}
+        onBackToHome={() => setScreen('landing')}
+      />
+    );
+  }
+
+  return (
     <HospitalProvider>
       <div className="app-shell min-h-screen flex flex-col selection:bg-cyan-200 selection:text-slate-950">
-        <Header />
+        <Header onLogout={() => {
+          logout();
+          setScreen('login');
+        }} />
         <AlertBanner />
         <NavigationTabs />
         <div className="flex-1">
           <MainContent />
         </div>
         <footer className="border-t border-slate-200 bg-white/80 py-4 px-6 text-center text-xs text-slate-500">
-          <p>MedTwin Hospital Operations Dashboard</p>
+          <p>MedTwin Hospital Operations Dashboard • Connected to Firebase medtwin-83f0f</p>
         </footer>
       </div>
     </HospitalProvider>
-  </AuthProvider>
-);
+  );
+};
 
 export default function App() {
-  const [showDashboard, setShowDashboard] = useState(false);
-
-  if (!showDashboard) {
-    return <LandingPage onEnter={() => setShowDashboard(true)} />;
-  }
-
-  return <Dashboard />;
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }

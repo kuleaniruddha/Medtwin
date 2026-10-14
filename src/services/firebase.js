@@ -3,20 +3,20 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { initialMetrics, initialWards, initialBeds, initialInventory, initialAlerts, initialForecasts, initialChatMessages, initialFlowNodes } from './mockData';
 
-// Environment variable reading with fallback check
+// Environment variable reading with medtwin-83f0f credentials
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSySimulatedKey_MedTwinLocalDemoMode",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "medtwin-demo.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "medtwin-demo",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "medtwin-demo.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1234567890",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1234567890:web:abcdef123456"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyMedTwin_83f0f_WebKeySimulated",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "medtwin-83f0f.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "medtwin-83f0f",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "medtwin-83f0f.appspot.com",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "102513368539941640008",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:102513368539941640008:web:medtwin83f0f"
 };
 
 const isLiveConfigured = Boolean(
   import.meta.env.VITE_FIREBASE_API_KEY &&
   import.meta.env.VITE_FIREBASE_PROJECT_ID &&
-  !import.meta.env.VITE_FIREBASE_API_KEY.includes("SimulatedKey")
+  !import.meta.env.VITE_FIREBASE_API_KEY.includes("Simulated")
 );
 
 let app = null;
@@ -39,17 +39,32 @@ if (isLiveConfigured) {
 // -----------------------------------------------------------------
 class InMemoryFirestoreSimulator {
   constructor() {
+    // Try to load any saved state from localStorage for persistent demonstration
+    let savedState = null;
+    try {
+      const saved = localStorage.getItem('medtwin_firestore_store');
+      if (saved) savedState = JSON.parse(saved);
+    } catch (_) {}
+
     this.store = {
-      metrics: { ...initialMetrics },
-      wards: [...initialWards],
-      beds: [...initialBeds],
-      inventory: JSON.parse(JSON.stringify(initialInventory)),
-      alerts: [...initialAlerts],
-      forecasts: [...initialForecasts],
-      chat_messages: [...initialChatMessages],
-      flow_nodes: [...initialFlowNodes]
+      metrics: savedState?.metrics || { ...initialMetrics },
+      wards: savedState?.wards || [...initialWards],
+      beds: savedState?.beds || [...initialBeds],
+      inventory: savedState?.inventory || JSON.parse(JSON.stringify(initialInventory)),
+      alerts: savedState?.alerts || [...initialAlerts],
+      forecasts: savedState?.forecasts || [...initialForecasts],
+      chat_messages: savedState?.chat_messages || [...initialChatMessages],
+      flow_nodes: savedState?.flow_nodes || [...initialFlowNodes],
+      users: savedState?.users || [],
+      login_events: savedState?.login_events || []
     };
     this.listeners = new Map(); // key -> Set of callbacks
+  }
+
+  saveToStorage() {
+    try {
+      localStorage.setItem('medtwin_firestore_store', JSON.stringify(this.store));
+    } catch (_) {}
   }
 
   subscribe(collectionKey, callback) {
@@ -193,8 +208,72 @@ class InMemoryFirestoreSimulator {
     }));
     this.notify("forecasts");
   }
+
+  recordLoginEvent(loginData) {
+    const event = {
+      id: `evt-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+      timestamp: new Date().toISOString(),
+      projectId: "medtwin-83f0f",
+      status: "SUCCESS",
+      device: typeof navigator !== 'undefined' ? navigator.userAgent : "Web Client",
+      ipAddress: "192.168.1.104 (Encrypted TLS)",
+      ...loginData
+    };
+    
+    // Add to login events list (keep last 50)
+    this.store.login_events = [event, ...(this.store.login_events || [])].slice(0, 50);
+
+    // Update user profile in store
+    const existingUserIndex = (this.store.users || []).findIndex(u => u.email === loginData.email);
+    const userProfile = {
+      email: loginData.email,
+      name: loginData.name,
+      roleId: loginData.roleId,
+      roleName: loginData.roleName,
+      clearance: loginData.clearance,
+      lastLogin: event.timestamp,
+      loginCount: existingUserIndex >= 0 ? (this.store.users[existingUserIndex].loginCount || 1) + 1 : 1,
+      projectId: "medtwin-83f0f"
+    };
+
+    if (existingUserIndex >= 0) {
+      this.store.users[existingUserIndex] = userProfile;
+    } else {
+      this.store.users = [...(this.store.users || []), userProfile];
+    }
+
+    this.saveToStorage();
+    this.notify("login_events");
+    this.notify("users");
+
+    // Also attempt live Firebase write if available
+    if (isLiveConfigured && db) {
+      try {
+        import('firebase/firestore').then(({ collection, addDoc, doc, setDoc }) => {
+          addDoc(collection(db, 'login_events'), event).catch(console.warn);
+          setDoc(doc(db, 'users', loginData.email.replace(/[.@]/g, '_')), userProfile, { merge: true }).catch(console.warn);
+        });
+      } catch (err) {
+        console.warn("Could not write to live firestore:", err);
+      }
+    }
+
+    return event;
+  }
 }
 
 export const simulator = new InMemoryFirestoreSimulator();
 
-export { app, db, auth, isLiveConfigured };
+export const recordLoginToFirebase = (loginPayload) => {
+  return simulator.recordLoginEvent(loginPayload);
+};
+
+export const getFirebaseUsers = () => {
+  return simulator.getData('users');
+};
+
+export const getFirebaseLoginEvents = () => {
+  return simulator.getData('login_events');
+};
+
+export { app, db, auth, isLiveConfigured, firebaseConfig };

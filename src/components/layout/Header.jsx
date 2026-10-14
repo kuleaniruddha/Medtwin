@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, ShieldAlert, Cpu, User, Zap, Wifi } from 'lucide-react';
+import { Activity, ShieldAlert, Cpu, User, Zap, Wifi, LogOut } from 'lucide-react';
 import { useHospital } from '../../context/HospitalContext';
 import { useAuth } from '../../context/AuthContext';
 import { StatBadge } from '../common/StatBadge';
 import { ActionButton } from '../common/ActionButton';
 import { isLiveConfigured } from '../../services/firebase';
 
-export const Header = () => {
+export const Header = ({ onLogout }) => {
   const { alerts, applySurge, surgePercent } = useHospital();
   const { activeRole, setActiveRole, ROLES } = useAuth();
   const [time, setTime] = useState(new Date());
@@ -84,15 +84,26 @@ export const Header = () => {
                 const role = ROLES.find(r => r.id === e.target.value);
                 if (role) setActiveRole(role);
               }}
-              className="bg-transparent text-slate-900 font-medium outline-none cursor-pointer"
+              className="bg-transparent text-slate-900 font-semibold outline-none cursor-pointer text-xs"
             >
               {ROLES.map((r) => (
                 <option key={r.id} value={r.id}>
-                  {r.name}
+                  {r.roleName || r.name}
                 </option>
               ))}
             </select>
           </div>
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-red-600 bg-slate-50 hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-lg transition-all"
+              title="Sign out & return to Login"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

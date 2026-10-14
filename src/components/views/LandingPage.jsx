@@ -267,7 +267,8 @@ const FloatingBadge = ({ icon: Icon, label, className }) => (
 /* ═══════════════════════════════════════════════════════════
    MAIN LANDING PAGE
    ═══════════════════════════════════════════════════════════ */
-export const LandingPage = ({ onEnter }) => {
+export const LandingPage = ({ onEnter, onGetStarted }) => {
+  const handleProceed = onGetStarted || onEnter;
   const [loaded, setLoaded] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
 
@@ -297,8 +298,8 @@ export const LandingPage = ({ onEnter }) => {
             <a href="#features" className="landing-nav-link">Features</a>
             <a href="#stats" className="landing-nav-link">Impact</a>
             <a href="#how-it-works" className="landing-nav-link">How It Works</a>
-            <button onClick={onEnter} className="landing-nav-cta">
-              Launch Dashboard <ArrowRight size={14} />
+            <button onClick={handleProceed} className="landing-nav-cta">
+              Get Started <ArrowRight size={14} />
             </button>
           </div>
         </div>
@@ -334,8 +335,8 @@ export const LandingPage = ({ onEnter }) => {
           </p>
 
           <div className="landing-hero-actions">
-            <button onClick={onEnter} className="landing-cta-primary" id="hero-enter-btn">
-              <span>Enter Dashboard</span>
+            <button onClick={handleProceed} className="landing-cta-primary" id="hero-enter-btn">
+              <span>Get Started</span>
               <ArrowRight size={18} />
             </button>
             <button onClick={scrollToFeatures} className="landing-cta-secondary">
@@ -477,8 +478,8 @@ export const LandingPage = ({ onEnter }) => {
             <p className="landing-cta-subtitle">
               Launch the MedTwin dashboard and experience intelligent hospital management today.
             </p>
-            <button onClick={onEnter} className="landing-cta-primary large" id="final-enter-btn">
-              <span>Open MedTwin Dashboard</span>
+            <button onClick={handleProceed} className="landing-cta-primary large" id="final-enter-btn">
+              <span>Get Started with MedTwin</span>
               <ArrowRight size={20} />
             </button>
           </div>

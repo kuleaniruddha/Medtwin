@@ -24,10 +24,13 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment variables
+# Environment variables and secrets
 .env
 .env.*
 !.env.example
+*service_account*.json
+*credentials*.json
+*.key
 
 # Python
 __pycache__/
