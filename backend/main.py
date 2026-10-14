@@ -11,6 +11,7 @@ from typing import Optional, List
 from database import get_db_connection
 from analytics import run_analytics_pipeline, train_and_forecast_resource
 from chat_engine import process_chat_query
+from mumbai_surveillance import get_all_mumbai_incidents, analyze_incident_with_ai
 
 app = FastAPI(title="MedTwin API", description="AI-Powered Hospital Digital Twin API Backend")
 
@@ -22,6 +23,51 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+class TriggerSurgeRequest(BaseModel):
+    incidentId: str
+    bedsToReserve: int
+    oxygenBoostLmin: float
+    incidentTitle: str
+    location: str
+
+@app.get("/api/mumbai/incidents")
+def get_mumbai_incidents():
+    """Returns real-time triaged Mumbai incidents using Hugging Face NLP model."""
+    try:
+        incidents = get_all_mumbai_incidents()
+        return {
+            "success": True,
+            "count": len(incidents),
+            "model": "Hugging Face DistilBERT (distilbert-base-uncased-finetuned-sst-2)",
+            "city": "Mumbai, Maharashtra",
+            "last_scan": datetime.datetime.now().strftime("%I:%M %p"),
+            "incidents": incidents
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/mumbai/apply-surge")
+def apply_mumbai_surge(req: TriggerSurgeRequest):
+    """Applies the AI recommended bed reservation & oxygen surge for a Mumbai incident."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        alert_msg = f"MUMBAI EMERGENCY: {req.location} - Reserving {req.bedsToReserve} Emergency/ICU Beds. Boost O2 by +{req.oxygenBoostLmin} L/min."
+        cursor.execute(
+            "INSERT INTO alerts (id, title, severity, message, timestamp, resolved) VALUES (?, ?, ?, ?, ?, 0)",
+            (f"mum-alt-{datetime.datetime.now().strftime('%H%M%S')}", f"Mumbai Surge: {req.location}", "CRITICAL", alert_msg, datetime.datetime.now().isoformat())
+        )
+        conn.commit()
+        conn.close()
+        
+        return {
+            "success": True,
+            "message": f"Activated hospital surge protocol for {req.location}. Reserved {req.bedsToReserve} emergency beds."
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ----------------- Models -----------------
 class AcknowledgeRequest(BaseModel):

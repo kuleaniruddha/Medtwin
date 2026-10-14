@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BedDouble, Wind, Pill, Users, ArrowUpRight, ShieldAlert, Zap } from 'lucide-react';
+import { BedDouble, Wind, Pill, Users, ArrowUpRight, ShieldAlert, Zap, Radio, ArrowRight } from 'lucide-react';
 import { useHospital } from '../../context/HospitalContext';
 import { GlassCard } from '../common/GlassCard';
 import { StatBadge } from '../common/StatBadge';
@@ -26,6 +26,35 @@ export const OverviewView = () => {
 
   return (
     <div className="space-y-6">
+      {/* Mumbai Incident AI Surveillance Banner */}
+      <div className="bg-gradient-to-r from-rose-50 via-amber-50 to-white border border-rose-200 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-rose-600 text-white shadow-xs">
+            <Radio className="w-5 h-5 animate-pulse" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-rose-800">
+                Mumbai Emergency AI Radar Active
+              </span>
+              <span className="text-[10px] font-semibold bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full border border-rose-300">
+                Hugging Face DistilBERT
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 mt-0.5">
+              Live Mumbai news & disaster surveillance: predicts bed reserve quotas, O2 pipeline spike & trauma medicines.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => setActiveTab('mumbai-radar')}
+          className="flex items-center gap-1.5 px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors self-start md:self-center whitespace-nowrap cursor-pointer"
+        >
+          <span>Open Mumbai Radar</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <GlassCard variant="interactive">
           <div className="flex items-center justify-between">

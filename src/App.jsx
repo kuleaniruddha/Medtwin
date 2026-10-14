@@ -15,6 +15,7 @@ import { MedTwinChat } from './components/views/MedTwinChat';
 import { AnalyticsView } from './components/views/AnalyticsView';
 import { LandingPage } from './components/views/LandingPage';
 import { LoginPage } from './components/views/LoginPage';
+import { MumbaiEmergencyRadar } from './components/views/MumbaiEmergencyRadar';
 
 import './styles/landing.css';
 
@@ -72,6 +73,7 @@ const MainContent = () => {
   return (
     <main className="w-full max-w-7xl mx-auto px-6 py-6 transition-all duration-300">
       {activeTab === 'overview' && <OverviewView />}
+      {activeTab === 'mumbai-radar' && <MumbaiEmergencyRadar />}
       {activeTab === 'bed-manager' && <BedManagerView />}
       {activeTab === 'resources' && <ResourceTrackerView />}
       {activeTab === 'forecast' && <ForecastView />}

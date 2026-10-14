@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, BedDouble, Package, TrendingUp, Network, Bell, Bot, BarChart3 } from 'lucide-react';
+import { LayoutDashboard, BedDouble, Package, TrendingUp, Network, Bell, Bot, BarChart3, Radio } from 'lucide-react';
 import { useHospital } from '../../context/HospitalContext';
 import clsx from 'clsx';
 
@@ -10,6 +10,7 @@ export const NavigationTabs = () => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'mumbai-radar', label: 'Mumbai Radar', icon: Radio, isPulse: true },
     { id: 'bed-manager', label: 'Beds', icon: BedDouble },
     { id: 'resources', label: 'Supplies', icon: Package },
     { id: 'forecast', label: 'Forecast', icon: TrendingUp },
@@ -39,6 +40,9 @@ export const NavigationTabs = () => {
             >
               <Icon className={clsx('w-4 h-4', isActive ? 'text-cyan-700' : 'text-slate-500')} />
               <span>{tab.label}</span>
+              {tab.isPulse && (
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+              )}
               {tab.badge > 0 && (
                 <span className="min-w-5 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-rose-600 text-white text-center">
                   {tab.badge}
